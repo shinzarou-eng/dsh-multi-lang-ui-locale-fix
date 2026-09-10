@@ -1,0 +1,43 @@
+name: Build patched lib/client.js
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download upstream lib/client.js
+        run: |
+          mkdir -p lib
+          curl -fsSL -o lib/client.js "https://raw.githubusercontent.com/asd13006/dsh-multi-lang-ui/6d8de399f8f2a4121282d34c93cbfc5de1391428/lib/client.js"
+
+      - name: Patch locale inject, plugin name and loader id
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+          let s = fs.readFileSync('lib/client.js', 'utf8');
+          s = s.replace(/const inject = \[\];/, 'const inject = ["locale"];');
+          s = s.replace(/const name = "multi-lang-ui";/, 'const name = "dsh-multi-lang-ui-locale-fix";');
+          s = s.replace(/id: "dsh-multi-lang-ui",/, 'id: "dsh-multi-lang-ui-locale-fix",');
+          fs.writeFileSync('lib/client.js', s);
+          NODE
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add lib/client.js
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "build: generate patched lib/client.js"
+            git push
+          fi
