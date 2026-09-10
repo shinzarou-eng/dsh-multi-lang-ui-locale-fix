@@ -1,0 +1,57 @@
+{
+  "name": "dsh-multi-lang-ui-locale-fix",
+  "description": "Patched dsh-multi-lang-ui with locale inject for DSH 0.1.2-rc.x",
+  "version": "0.1.2-fix",
+  "type": "module",
+  "main": "./index.mjs",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "default": "./index.mjs"
+    },
+    "./client": {
+      "default": "./lib/client.js"
+    },
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-locale"
+      ],
+      "platform": "web"
+    }
+  },
+  "peerDependencies": {
+    "cordis": ">=4.0.0-rc.8 <5.0.0",
+    "@deepseek-ai/dsh-client-locale": ">=0.1.0-rc.6"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh-plugin",
+    "dsh",
+    "locale",
+    "i18n",
+    "localization",
+    "multilingual",
+    "french",
+    "german",
+    "spanish",
+    "japanese",
+    "korean"
+  ],
+  "files": [
+    "index.mjs",
+    "index.d.ts",
+    "lib/client.js",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "license": "MIT"
+}
